@@ -1,0 +1,13 @@
+<Solution>
+  <Project Path="ReportBroker.Api/ReportBroker.Api.csproj">
+    <BuildDependency Project="ReportBroker.Application/ReportBroker.Application.csproj" />
+    <BuildDependency Project="ReportBroker.Infrastructure/ReportBroker.Infrastructure.csproj" />
+  </Project>
+  <Project Path="ReportBroker.Application/ReportBroker.Application.csproj">
+    <BuildDependency Project="ReportBroker.Domain/ReportBroker.Domain.csproj" />
+  </Project>
+  <Project Path="ReportBroker.Domain/ReportBroker.Domain.csproj" />
+  <Project Path="ReportBroker.Infrastructure/ReportBroker.Infrastructure.csproj">
+    <BuildDependency Project="ReportBroker.Application/ReportBroker.Application.csproj" />
+  </Project>
+</Solution>
