@@ -7,7 +7,7 @@ namespace ReportBroker.Domain.Interfaces
 {
     internal interface IReportRequestRepository
     {
-        Task<ReportRequest> AddAsync(ReportRequest request, CancellationToken ct = default);
+        Task<ReportRequest?> AddAsync(ReportRequest request, CancellationToken ct = default);
 
         Task<ReportRequest?> GetByIdAsync(Guid id, CancellationToken ct = default);
     }
