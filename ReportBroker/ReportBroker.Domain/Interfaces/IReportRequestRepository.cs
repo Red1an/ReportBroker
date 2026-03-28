@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ReportBroker.Domain.Interfaces
 {
-    internal interface IReportRequestRepository
+    public interface IReportRequestRepository
     {
         Task<ReportRequest?> AddAsync(ReportRequest request, CancellationToken ct = default);
 
