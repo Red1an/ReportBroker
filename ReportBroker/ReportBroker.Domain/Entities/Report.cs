@@ -12,8 +12,13 @@ namespace ReportBroker.Domain.Entities
         public ReportParameters Parameters { get; set; } = null!;
         public ReportStatus Status { get; set; }
         public int? ViewCount { get; set; }
+        public double? ConversionRatio {  get; set; }
         public int? PaymentCount { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime ComplitedAt { get; set; }
+
+        private readonly List<ReportRequest> _requests = new();
+        public IReadOnlyCollection<ReportRequest> Requests => _requests.AsReadOnly();
 
         public Report() { }
 
@@ -38,17 +43,26 @@ namespace ReportBroker.Domain.Entities
             Status = ReportStatus.Processing;
         }
 
-        public void Complete()
+        public void Complete(int viewCount, int paymentCount)
         {
             if (Status != ReportStatus.Processing)
             {
-                throw new InvalidOperationException($"Cant stop processing with status {Status}");
+                throw new InvalidOperationException($"Cant finish processing with status {Status}");
             }
+
+            ViewCount = viewCount;
+            PaymentCount = paymentCount;
+            ConversionRatio = viewCount > 0
+            ? Math.Round((double)paymentCount / viewCount * 100, 2)
+            : 0;
+
             Status = ReportStatus.Complited;
+            ComplitedAt = DateTime.UtcNow;
         }
 
         public void Fail()
         {
+            ComplitedAt = DateTime.UtcNow;
             Status = ReportStatus.Failed;
         }
     }

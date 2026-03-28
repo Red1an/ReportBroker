@@ -12,19 +12,20 @@ namespace ReportBroker.Domain.Entities
         public Guid ReportId { get; set; }
         public Report Report { get; set; } = null!;
         public DateTime RequestAt { get; set; }
-        public Guid UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         public ReportRequest() { }
 
-        public static ReportRequest Create(Guid reportId, Guid userId) 
+        public static ReportRequest Create(Guid reportId, string userId) 
         {
-            if (userId == Guid.Empty)
+            if (userId == string.Empty)
                 throw new ArgumentException("userId cantt be null");
 
             return new ReportRequest
             {
                 Id = Guid.NewGuid(),
                 ReportId = reportId,
+                UserId = userId,
                 RequestAt = DateTime.UtcNow,
             };
         }
