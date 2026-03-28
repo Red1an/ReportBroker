@@ -57,12 +57,12 @@ namespace ReportBroker.Domain.Entities
             : 0;
 
             Status = ReportStatus.Complited;
-            ComplitedAt = DateTime.UtcNow;
+            CompletedAt = DateTime.UtcNow;
         }
 
         public void Fail()
         {
-            ComplitedAt = DateTime.UtcNow;
+            CompletedAt = DateTime.UtcNow;
             Status = ReportStatus.Failed;
         }
     }

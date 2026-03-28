@@ -1,15 +1,18 @@
 ﻿using ReportBroker.Domain.Interfaces;
 using ReportBroker.Domain.Exceptions;
+using ReportBroker.Application.Interfaces;
 
 namespace ReportBroker.Application.Services
 {
     public class ProcessReportService
     {
         private readonly IReportRepository _reportRepository;
+        private readonly ICacheService _cache;
 
-        public ProcessReportService(IReportRepository reportRepository)
+        public ProcessReportService(IReportRepository reportRepository, ICacheService cache)
         {
             _reportRepository = reportRepository;
+            _cache = cache;
         }
 
         public async Task ExecuteAsync(Guid reportId, CancellationToken ct = default)
@@ -29,6 +32,11 @@ namespace ReportBroker.Application.Services
 
                 report.Complete(viewCount, paymentCount);
                 await _reportRepository.UpdateAsync(report, ct);
+
+                foreach(var request in report.Requests)
+                {
+                    await _cache.RemoveAsync($"report-status:{request.Id}", ct);
+                }
 
             }
             catch (Exception ex) 
