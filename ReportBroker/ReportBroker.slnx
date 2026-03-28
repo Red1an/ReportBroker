@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="ReportBroker.Api/ReportBroker.Api.csproj">
+  <Project Path="ReportBroker.Api/ReportBroker.Api.csproj" Id="818d2618-a07f-42ba-866d-8e074793ee1e">
     <BuildDependency Project="ReportBroker.Application/ReportBroker.Application.csproj" />
     <BuildDependency Project="ReportBroker.Infrastructure/ReportBroker.Infrastructure.csproj" />
   </Project>
