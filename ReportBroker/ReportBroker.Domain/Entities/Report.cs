@@ -15,7 +15,7 @@ namespace ReportBroker.Domain.Entities
         public double? ConversionRatio {  get; private set; }
         public int? PaymentCount { get; private set; }
         public DateTime CreatedAt { get; private set; }
-        public DateTime ComplitedAt { get; private set; }
+        public DateTime CompletedAt { get; private set; }
 
         private readonly List<ReportRequest> _requests = new();
         public IReadOnlyCollection<ReportRequest> Requests => _requests.AsReadOnly();

@@ -14,4 +14,9 @@
     <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
   </ItemGroup>
 
+  <ItemGroup>
+	<ProjectReference Include ="..\ReportBroker.Application\ReportBroker.Application.csproj"/>
+	<ProjectReference Include ="..\ReportBroker.Infrastructure\ReportBroker.Infrastructure.csproj"/>
+  </ItemGroup>
+
 </Project>

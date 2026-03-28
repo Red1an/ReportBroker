@@ -10,6 +10,6 @@ namespace ReportBroker.Domain.Interfaces
 
         Task<Report?> AddAsync(Report report, CancellationToken ct = default);
 
-        Task<Report?> UpdateAsync(Report report, CancellationToken ct = default);
+        Task UpdateAsync(Report report, CancellationToken ct = default);
     }   
 }
