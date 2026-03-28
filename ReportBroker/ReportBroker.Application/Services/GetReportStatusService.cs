@@ -1,5 +1,6 @@
 ﻿using ReportBroker.Domain.Interfaces;
 using ReportBroker.Domain.Entities;
+using ReportBroker.Domain.Exceptions;
 using ReportBroker.Application.DTOs;
 
 namespace ReportBroker.Application.Services
@@ -15,11 +16,12 @@ namespace ReportBroker.Application.Services
 
         public async Task<ReportStatusDto> ExecuteAsync(Guid requestId, CancellationToken ct = default)
         {
-            var request = await _requestRepository.GetByIdAsync(requestId, ct);
+            var request = await _requestRepository.GetByIdAsync(requestId, ct)
+                    ?? throw new ReportRequestNotFoundException(requestId);
 
             var dto = new ReportStatusDto
             {
-                RequestId = request!.Id,
+                RequestId = request.Id,
                 ReportId = request.ReportId,
                 Status = request.Report.Status.ToString(),
                 ConversionRatio = request.Report.ConversionRatio,

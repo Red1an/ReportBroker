@@ -1,4 +1,5 @@
 ﻿using ReportBroker.Domain.Interfaces;
+using ReportBroker.Domain.Exceptions;
 
 namespace ReportBroker.Application.Services
 {
@@ -11,10 +12,10 @@ namespace ReportBroker.Application.Services
             _reportRepository = reportRepository;
         }
 
-        public async Task ExecuteAsync(Guid ReportId, CancellationToken ct = default)
+        public async Task ExecuteAsync(Guid reportId, CancellationToken ct = default)
         {
-            var report = await _reportRepository.GetByIdAsync(ReportId);
-
+            var report = await _reportRepository.GetByIdAsync(reportId)
+                    ?? throw new ReportNotFoundException(reportId);
             try
             {
                 report.Processing();

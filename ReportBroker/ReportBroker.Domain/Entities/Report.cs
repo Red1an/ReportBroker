@@ -8,14 +8,14 @@ namespace ReportBroker.Domain.Entities
 {
     public class Report
     {
-        public Guid Id { get; set; }
-        public ReportParameters Parameters { get; set; } = null!;
-        public ReportStatus Status { get; set; }
-        public int? ViewCount { get; set; }
-        public double? ConversionRatio {  get; set; }
-        public int? PaymentCount { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime ComplitedAt { get; set; }
+        public Guid Id { get; private set; }
+        public ReportParameters Parameters { get; private set; } = null!;
+        public ReportStatus Status { get; private set; }
+        public int? ViewCount { get; private set; }
+        public double? ConversionRatio {  get; private set; }
+        public int? PaymentCount { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime ComplitedAt { get; private set; }
 
         private readonly List<ReportRequest> _requests = new();
         public IReadOnlyCollection<ReportRequest> Requests => _requests.AsReadOnly();

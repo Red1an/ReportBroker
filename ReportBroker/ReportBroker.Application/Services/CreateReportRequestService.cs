@@ -31,6 +31,7 @@ namespace ReportBroker.Application.Services
             parameters.Validate();
 
             var existingReport = await _reportRepository.GetByIdAsync(parameters.ProductId, ct);
+
             Report? report;
 
             if (existingReport != null)

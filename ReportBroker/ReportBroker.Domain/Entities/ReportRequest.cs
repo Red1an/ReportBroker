@@ -8,11 +8,11 @@ namespace ReportBroker.Domain.Entities
 {
     public class ReportRequest
     {
-        public Guid Id { get; set; }
-        public Guid ReportId { get; set; }
-        public Report Report { get; set; } = null!;
-        public DateTime RequestAt { get; set; }
-        public string UserId { get; set; } = string.Empty;
+        public Guid Id { get; private set; }
+        public Guid ReportId { get; private set; }
+        public Report Report { get; private set; } = null!;
+        public DateTime RequestAt { get; private set; }
+        public string UserId { get; private set; } = string.Empty;
 
         public ReportRequest() { }
 
