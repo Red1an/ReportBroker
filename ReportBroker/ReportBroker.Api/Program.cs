@@ -1,5 +1,6 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using ReportBroker.Api.Data;
 using ReportBroker.Api.Services;
 using ReportBroker.Application.Interfaces;
 using ReportBroker.Application.Services;
@@ -10,6 +11,13 @@ using ReportBroker.Infrastructure.Data.Repositories;
 using ReportBroker.Infrastructure.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
+builder.Logging.AddFilter("MassTransit", LogLevel.Warning);           // оставляем только важные предупреждения
+builder.Logging.AddFilter("Npgsql", LogLevel.Warning);
+
+// Можно ещё строже убрать совсем шумные логи:
+builder.Logging.AddFilter("MassTransit.ReceiveTransport", LogLevel.Error);     // только реальные ошибки
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
@@ -24,6 +32,7 @@ builder.Services.AddScoped<ICacheService, RedisCacheService>();
 builder.Services.AddScoped<CreateReportRequestService>();
 builder.Services.AddScoped<GetReportStatusService>();
 builder.Services.AddScoped<ProcessReportService>();
+builder.Services.AddScoped<DataSeeder>();
 
 builder.Services.AddGrpc();
 builder.Services.AddMassTransit(x =>
@@ -42,9 +51,9 @@ builder.Services.AddMassTransit(x =>
         {
             e.PrefetchCount = 10;
 
-            e.UseMessageRetry(r =>
-                r.Interval(3, TimeSpan.FromSeconds(5)));
-
+            //e.UseMessageRetry(r =>
+            //    r.Interval(3, TimeSpan.FromSeconds(5)));
+            e.UseMessageRetry(r => r.Immediate(1));
             e.ConfigureConsumer<ReportRequestConsumer>(ctx);
         });
     });
@@ -56,6 +65,14 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.Migrate();
+
+    if (app.Environment.IsDevelopment())
+    {
+        using var seedScope = app.Services.CreateScope();
+        var seeder = seedScope.ServiceProvider
+            .GetRequiredService<DataSeeder>();
+        await seeder.SeedAsync();
+    }
 }
 
 app.MapGrpcService<ReportGrpcService>();

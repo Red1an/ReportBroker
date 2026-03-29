@@ -7,16 +7,19 @@ namespace ReportBroker.Api.Services
     public class ReportGrpcService : ReportService.ReportServiceBase
     {
         private readonly GetReportStatusService _getStatusService;
+        private readonly ILogger<ReportGrpcService> _logger;
 
-        public ReportGrpcService(GetReportStatusService getStatusService) 
+        public ReportGrpcService(GetReportStatusService getStatusService,
+            ILogger<ReportGrpcService> logger) 
         {
             _getStatusService = getStatusService;
+            _logger = logger;
         }
 
         public override async Task<GetReportStatusResponse> GetReportStatus(
             GetReportStatusRequest request,
             ServerCallContext context)
-        {
+        {       
             if (!Guid.TryParse(request.RequestId, out var requestId))
             {
                 throw new RpcException(new Status(
@@ -44,12 +47,18 @@ namespace ReportBroker.Api.Services
             }
             catch (ReportRequestNotFoundException ex)
             {
+                _logger.LogWarning(
+                "Запрос не найден: {Message}", ex.Message);
+
                 throw new RpcException(new Status(
                     StatusCode.NotFound,
                     ex.Message));
             }
             catch (Exception ex)
-            {               
+            {
+                _logger.LogError(ex,
+                "Ошибка при получении статуса отчёта");
+
                 throw new RpcException(new Status(
                     StatusCode.Internal,
                     "Внутренняя ошибка сервера"));

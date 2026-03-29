@@ -1,8 +1,9 @@
-﻿using ReportBroker.Domain.Interfaces;
-using ReportBroker.Domain.Entities;
-using ReportBroker.Domain.Exceptions;
+﻿using Microsoft.Extensions.Logging;
 using ReportBroker.Application.DTOs;
 using ReportBroker.Application.Interfaces;
+using ReportBroker.Domain.Entities;
+using ReportBroker.Domain.Exceptions;
+using ReportBroker.Domain.Interfaces;
 
 namespace ReportBroker.Application.Services
 {
@@ -10,13 +11,16 @@ namespace ReportBroker.Application.Services
     {
         private readonly IReportRequestRepository _requestRepository;
         private readonly ICacheService _cache;
+        private readonly ILogger<GetReportStatusService> _logger;
         private static string CacheKey(Guid requestId) =>
         $"report-status:{requestId}";
 
-        public GetReportStatusService(IReportRequestRepository requestRepository, ICacheService cache)
+        public GetReportStatusService(IReportRequestRepository requestRepository, 
+            ICacheService cache, ILogger<GetReportStatusService> logger)
         {
             _requestRepository = requestRepository;
             _cache = cache;
+            _logger = logger;
         }
 
         public async Task<ReportStatusDto> ExecuteAsync(Guid requestId, CancellationToken ct = default)
@@ -26,6 +30,8 @@ namespace ReportBroker.Application.Services
 
             if (cached != null)
             {
+                _logger.LogInformation(
+                "Статус запроса {RequestId} получен из кэша", requestId);
                 return cached;
             }
 

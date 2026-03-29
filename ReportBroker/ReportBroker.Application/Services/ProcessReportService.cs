@@ -1,6 +1,7 @@
-﻿using ReportBroker.Domain.Interfaces;
-using ReportBroker.Domain.Exceptions;
+﻿using Microsoft.Extensions.Logging;
 using ReportBroker.Application.Interfaces;
+using ReportBroker.Domain.Exceptions;
+using ReportBroker.Domain.Interfaces;
 
 namespace ReportBroker.Application.Services
 {
@@ -8,11 +9,14 @@ namespace ReportBroker.Application.Services
     {
         private readonly IReportRepository _reportRepository;
         private readonly ICacheService _cache;
+        private readonly ILogger<ProcessReportService> _logger;
 
-        public ProcessReportService(IReportRepository reportRepository, ICacheService cache)
+        public ProcessReportService(IReportRepository reportRepository,
+            ICacheService cache, ILogger<ProcessReportService> logger)
         {
             _reportRepository = reportRepository;
             _cache = cache;
+            _logger = logger;
         }
 
         public async Task ExecuteAsync(Guid reportId, CancellationToken ct = default)
@@ -23,6 +27,9 @@ namespace ReportBroker.Application.Services
             {
                 report.Processing();
                 await _reportRepository.UpdateAsync(report, ct);
+
+                _logger.LogInformation(
+                "Начата обработка отчёта {ReportId}", reportId);
 
                 await Task.Delay(TimeSpan.FromSeconds(5), ct);
 
@@ -38,9 +45,14 @@ namespace ReportBroker.Application.Services
                     await _cache.RemoveAsync($"report-status:{request.Id}", ct);
                 }
 
+                _logger.LogInformation(
+               "Отчёт {ReportId} успешно обработан. ", reportId);
+
             }
             catch (Exception ex) 
             {
+                _logger.LogError("Ошибка при обработке отчёта {ReportId}", reportId);
+
                 report.Fail();
                 await _reportRepository.UpdateAsync(report, ct);
             }

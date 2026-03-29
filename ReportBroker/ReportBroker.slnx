@@ -10,4 +10,5 @@
   <Project Path="ReportBroker.Infrastructure/ReportBroker.Infrastructure.csproj">
     <BuildDependency Project="ReportBroker.Application/ReportBroker.Application.csproj" />
   </Project>
+  <Project Path="ReportBroker.Tests/ReportBroker.Tests.csproj" Id="d1f72113-3aa6-43ff-bd67-ae3686e70d09" />
 </Solution>
