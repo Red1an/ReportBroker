@@ -33,7 +33,8 @@ namespace ReportBroker.Application.Services
 
             parameters.Validate();
 
-            var existingReport = await _reportRepository.GetByIdAsync(parameters.ProductId, ct);
+            var existingReport = await _reportRepository
+            .GetByParametersAsync(parameters, ct);
 
             Report? report;
 
@@ -52,7 +53,7 @@ namespace ReportBroker.Application.Services
                 var newReport = Report.Create(parameters);
                 report = await _reportRepository.AddAsync(newReport, ct);
             }
-            var request = ReportRequest.Create(report!.Id, dto.UserId);            
+            var request = ReportRequest.Create(report.Id, dto.UserId);            
             request = await _requestRepository.AddAsync(request, ct);
 
             return request;

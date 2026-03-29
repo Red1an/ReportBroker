@@ -30,5 +30,5 @@
   <ItemGroup>
     <Protobuf Include="Protos\report.proto" GrpcServices="Server" />
   </ItemGroup>
-
+	
 </Project>

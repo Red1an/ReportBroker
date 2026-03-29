@@ -10,14 +10,14 @@ using ReportBroker.Infrastructure.Data;
 using ReportBroker.Infrastructure.Data.Repositories;
 using ReportBroker.Infrastructure.Messaging;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
-builder.Logging.AddFilter("MassTransit", LogLevel.Warning);           // оставляем только важные предупреждения
-builder.Logging.AddFilter("Npgsql", LogLevel.Warning);
 
-// Можно ещё строже убрать совсем шумные логи:
-builder.Logging.AddFilter("MassTransit.ReceiveTransport", LogLevel.Error);     // только реальные ошибки
-builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+
+var builder = WebApplication.CreateBuilder(args);
+Console.WriteLine("=== DEBUG ENVIRONMENT ===");
+Console.WriteLine($"ASPNETCORE_ENVIRONMENT = {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
+Console.WriteLine($"IsDevelopment() = {builder.Environment.IsDevelopment()}");
+Console.WriteLine($"ConnectionString used = {builder.Configuration.GetConnectionString("Postgres")}");
+Console.WriteLine("=========================");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
@@ -65,14 +65,12 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.Migrate();
-
-    if (app.Environment.IsDevelopment())
-    {
-        using var seedScope = app.Services.CreateScope();
-        var seeder = seedScope.ServiceProvider
-            .GetRequiredService<DataSeeder>();
-        await seeder.SeedAsync();
-    }
+   
+    using var seedScope = app.Services.CreateScope();
+    var seeder = seedScope.ServiceProvider
+        .GetRequiredService<DataSeeder>();
+    await seeder.SeedAsync();
+    
 }
 
 app.MapGrpcService<ReportGrpcService>();
