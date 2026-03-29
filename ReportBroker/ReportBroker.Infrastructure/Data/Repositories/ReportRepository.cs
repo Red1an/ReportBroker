@@ -5,7 +5,7 @@ using ReportBroker.Domain.ValueObjects;
 
 namespace ReportBroker.Infrastructure.Data.Repositories
 {
-    internal class ReportRepository : IReportRepository
+    public class ReportRepository : IReportRepository
     {
         private readonly AppDbContext _context;
 

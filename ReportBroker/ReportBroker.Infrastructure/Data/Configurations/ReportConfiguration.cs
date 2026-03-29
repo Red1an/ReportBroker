@@ -56,15 +56,17 @@ namespace ReportBroker.Infrastructure.Data.Configurations
                 rp.Property(p => p.PeriodEnd)
                 .HasColumnName("period_end")
                 .IsRequired();
-            });
 
-            builder.HasIndex(
-                "Parameters_ProductId",
-                "Parameters_DesignId",
-                "Parameters_PeriodStart",
-                "Parameters_PeriodEnd")
+                rp.HasIndex(p => new
+                {
+                    p.ProductId,
+                    p.DesignId,
+                    p.PeriodStart,
+                    p.PeriodEnd
+                })
                 .IsUnique()
                 .HasDatabaseName("ix_reports_unique_parameters");
+            });            
 
             builder.HasMany(r => r.Requests)
                 .WithOne(rr => rr.Report)

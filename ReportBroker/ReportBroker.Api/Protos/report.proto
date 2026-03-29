@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option csharp_namespace = "ReportBroker.Api";
+
+package report;
+
+service ReportService {
+  rpc GetReportStatus (GetReportStatusRequest)
+      returns (GetReportStatusResponse);
+}
+
+message GetReportStatusRequest {
+  string request_id = 1;
+}
+
+message GetReportStatusResponse {
+  string request_id = 1;
+  string report_id = 2;
+  string status = 3;
+  double conversion_ratio = 4;
+  int32 payment_count = 5;
+  int32 view_count = 6;
+  string created_at = 7;
+  string completed_at = 8;
+}
