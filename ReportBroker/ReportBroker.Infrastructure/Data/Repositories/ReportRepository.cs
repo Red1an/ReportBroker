@@ -34,9 +34,17 @@ namespace ReportBroker.Infrastructure.Data.Repositories
 
         public async Task<Report?> AddAsync(Report report, CancellationToken ct = default)
         {
-            await _context.Report.AddAsync(report, ct);
-            await _context.SaveChangesAsync(ct);
-            return report;
+            try
+            {
+                await _context.Report.AddAsync(report, ct);
+                await _context.SaveChangesAsync(ct);
+                return report;
+            }
+            catch
+            {
+                _context.ChangeTracker.Clear();
+                throw;
+            }
         }
 
         public async Task UpdateAsync(Report report, CancellationToken ct = default)

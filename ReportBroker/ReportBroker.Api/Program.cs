@@ -13,11 +13,6 @@ using ReportBroker.Infrastructure.Messaging;
 
 
 var builder = WebApplication.CreateBuilder(args);
-Console.WriteLine("=== DEBUG ENVIRONMENT ===");
-Console.WriteLine($"ASPNETCORE_ENVIRONMENT = {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
-Console.WriteLine($"IsDevelopment() = {builder.Environment.IsDevelopment()}");
-Console.WriteLine($"ConnectionString used = {builder.Configuration.GetConnectionString("Postgres")}");
-Console.WriteLine("=========================");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
@@ -51,8 +46,8 @@ builder.Services.AddMassTransit(x =>
         {
             e.PrefetchCount = 10;
 
-            //e.UseMessageRetry(r =>
-            //    r.Interval(3, TimeSpan.FromSeconds(5)));
+            e.UseMessageRetry(r =>
+                r.Interval(3, TimeSpan.FromSeconds(5)));
             e.UseMessageRetry(r => r.Immediate(1));
             e.ConfigureConsumer<ReportRequestConsumer>(ctx);
         });

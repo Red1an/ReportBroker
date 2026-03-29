@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ReportBroker.Application.Interfaces;
+using ReportBroker.Domain.Enums;
 using ReportBroker.Domain.Exceptions;
 using ReportBroker.Domain.Interfaces;
 
@@ -22,7 +23,7 @@ namespace ReportBroker.Application.Services
         public async Task ExecuteAsync(Guid reportId, CancellationToken ct = default)
         {
             var report = await _reportRepository.GetByIdAsync(reportId)
-                    ?? throw new ReportNotFoundException(reportId);
+                    ?? throw new ReportNotFoundException(reportId);            
             try
             {
                 report.Processing();

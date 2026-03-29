@@ -15,9 +15,17 @@ namespace ReportBroker.Infrastructure.Data.Repositories
 
         public async Task<ReportRequest?> AddAsync(ReportRequest request, CancellationToken ct = default)
         {
-            await _context.ReportRequest.AddAsync(request, ct);
-            await _context.SaveChangesAsync();
-            return request;
+            try
+            {
+                await _context.ReportRequest.AddAsync(request, ct);
+                await _context.SaveChangesAsync(ct);
+                return request;
+            }
+            catch
+            {
+                _context.ChangeTracker.Clear();
+                throw;
+            }
         }
 
         public async Task<ReportRequest?> GetByIdAsync(Guid id, CancellationToken ct = default) 
